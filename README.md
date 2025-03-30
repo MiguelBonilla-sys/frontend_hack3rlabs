@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# H4ck3r L4bs - Frontend
 
-## Getting Started
+Este proyecto es un frontend moderno y atractivo para la plataforma H4ck3r L4bs, desarrollado con Next.js 15 y Tailwind CSS. La plataforma está enfocada en la comunidad de ciberseguridad y hacking ético.
 
-First, run the development server:
+## Tecnologías utilizadas
 
+- **Next.js 15** - Framework de React con soporte para App Router
+- **TypeScript** - Superset de JavaScript con tipos estáticos
+- **Tailwind CSS** - Framework de CSS utilitario para diseño rápido y responsivo
+- **React Hooks** - Para manejo de estado y efectos
+- **Fuentes optimizadas** - Implementación de fuentes personalizadas (Inter, Fira Code, JetBrains Mono)
+
+## Instalación
+
+1. Clona este repositorio:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repo-url>
+cd front-hacker
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Instala las dependencias:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Ejecuta el proyecto en modo desarrollo:
+```bash
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
 
-## Learn More
+## Estructura del proyecto
 
-To learn more about Next.js, take a look at the following resources:
+- `/app` - Componentes y páginas principales (usando App Router de Next.js)
+- `/app/components` - Componentes globales reutilizables (Header, Hero, etc.)
+- `/app/[sección]/components` - Componentes específicos de cada sección
+- `/styles` - Estilos globales y variables CSS
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Características principales
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Diseño responsivo y moderno** - Optimizado para todo tipo de dispositivos
+- **UI con efectos visuales avanzados** - Gradientes, animaciones, transiciones fluidas
+- **Carrusel interactivo** - Con animaciones y controles mejorados
+- **Formulario de login optimizado** - Con validación y feedback visual
+- **Componentes modulares** - Para cada sección (Cursos, Proyectos, Noticias, Ofertas)
+- **Tipografía técnica** - Usando fuentes monoespaciadas para elementos técnicos y de código
 
-## Deploy on Vercel
+## Secciones principales
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Inicio** - Página principal con carrusel y presentación
+- **Cursos** - Catálogo de cursos disponibles
+- **Proyectos** - Proyectos realizados por la comunidad
+- **Noticias** - Artículos y actualizaciones
+- **Ofertas** - Ofertas laborales relacionadas con ciberseguridad
+- **Login** - Sistema de autenticación para miembros
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Mejoras recientes
+
+- Rediseño completo de la interfaz con estética moderna
+- Implementación de efectos glassmorphism y neomorfismo
+- Optimización de rendimiento y tiempos de carga
+- Mejora de la accesibilidad y experiencia de usuario
+- Incorporación de tipografías técnicas optimizadas para código
+
+## Conexión con el backend
+
+Este frontend está diseñado para conectarse con un backend a través de peticiones REST. Actualmente utiliza datos simulados para desarrollo y demostración.
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT.

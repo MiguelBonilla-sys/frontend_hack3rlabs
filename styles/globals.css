@@ -1,0 +1,47 @@
+@import '@fontsource/fira-code/400.css';
+@import '@fontsource/fira-code/600.css';
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 35, 75;
+  --background-end-rgb: 0, 35, 75;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      rgb(var(--background-start-rgb)),
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+code, pre, .mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.tech-text {
+  font-family: 'Fira Code', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+} 
