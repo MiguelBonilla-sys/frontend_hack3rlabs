@@ -96,7 +96,7 @@ const noticias: Noticia[] = [
     5. **Protección de identidad avanzada**: Más allá del MFA tradicional, veremos nuevos enfoques como la autenticación continua y basada en comportamiento. Las tecnologías de verificación biométrica y sin contraseñas experimentarán un crecimiento del 60%.
 
     Eduardo Vázquez, CISO de CyberDefense Global, comenta: "Las organizaciones deben prepararse para un ecosistema de amenazas más complejo y sofisticado. La buena noticia es que disponemos de tecnologías defensivas cada vez más avanzadas. La clave está en implementarlas correctamente y mantener un enfoque proactivo frente a la seguridad."`,
-    imagen: 'https://images.unsplash.com/photo-1633265486501-0cf354162e63?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
+    imagen: 'https://images.unsplash.com/photo-1591696205602-2f950c417cb9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
     fecha: '2023-01-15',
     autor: 'Laura Gómez',
     categoria: 'Tendencias'

@@ -31,7 +31,7 @@ const proyectos: Proyecto[] = [
     nombre: 'SecureAuth: Sistema de Autenticación Multifactor',
     descripcion: 'Implementación de un sistema de autenticación de múltiples factores con soporte para huella digital, reconocimiento facial y tokens temporales. Diseñado para ser fácilmente integrable en aplicaciones existentes.',
     enlace: 'https://github.com/hackers-lab/secureauth',
-    imagen: 'https://images.unsplash.com/photo-1563863564165-576cea735f12?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80',
+    imagen: 'https://images.unsplash.com/photo-1614064641938-3bbee52942c7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2670&q=80',
     fecha: '2023-08-22',
     tecnologias: ['JavaScript', 'Node.js', 'React', 'Biometrics API'],
     integrantes: ['Ana López', 'Roberto Sánchez']
@@ -201,8 +201,8 @@ export default function ProyectosContent() {
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary to-transparent opacity-80"></div>
-                  <div className="absolute bottom-0 left-0 right-0 p-4 z-10">
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/50 to-primary/30 opacity-90 pointer-events-none"></div>
+                  <div className="absolute bottom-0 left-0 right-0 p-4 z-10 pointer-events-none">
                     <h2 className="text-xl font-bold text-white group-hover:text-highlight transition-colors duration-300">{proyecto.nombre}</h2>
                     <p className="text-white/70 text-sm">
                       {new Date(proyecto.fecha).toLocaleDateString('es-ES', {

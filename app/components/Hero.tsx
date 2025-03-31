@@ -95,28 +95,26 @@ export default function Hero() {
                 />
 
                 <div className="absolute inset-0 z-20 flex items-center">
-                  <div className={`w-full md:w-3/5 lg:w-1/2 px-6 md:px-12 py-8 text-white ${
-                    index === 2 ? 'md:pl-16 lg:pl-20' : ''
-                  }`}>
+                  <div className="w-full md:w-3/5 lg:w-1/2 px-6 md:px-12 md:pl-16 lg:pl-20 py-8 text-white">
                     <h2 
-                      className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-6 transition-all duration-700 ${
+                      className={`text-3xl md:text-4xl lg:text-5xl font-bold mb-8 max-w-[80%] transition-all duration-700 ${
                         index === currentSlide 
                           ? 'opacity-100 translate-y-0' 
                           : 'opacity-0 -translate-y-10'
-                      } ${index === 2 ? 'max-w-[80%] mb-8' : ''}`}
+                      }`}
                     >
                       {slide.title}
                     </h2>
                     <p 
-                      className={`text-base md:text-lg mb-8 transition-all duration-700 delay-100 ${
+                      className={`text-base md:text-lg mb-10 max-w-[80%] transition-all duration-700 delay-100 ${
                         index === currentSlide 
                           ? 'opacity-100 translate-y-0' 
                           : 'opacity-0 -translate-y-10'
-                      } ${index === 2 ? 'max-w-[80%] mb-10' : ''}`}
+                      }`}
                     >
                       {slide.text}
                     </p>
-                    <div className={`${index === 2 ? 'mt-4' : 'mt-2'}`}>
+                    <div className="mt-4">
                       <button 
                         className={`px-6 py-3 bg-highlight text-white font-bold rounded-lg hover:bg-blue-700 transition-all duration-300 shadow-lg hover:shadow-highlight/30 transform hover:-translate-y-1 ${
                           index === currentSlide 
@@ -150,10 +148,10 @@ export default function Hero() {
               </div>
             </div>
             
-            {/* Flechas laterales */}
+            {/* Flechas centradas en los lados con valores más ajustados */}
             <button 
               onClick={prevSlide}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-all duration-300 text-white hover:scale-110"
+              className="absolute left-1 md:left-1.5 lg:left-2 top-1/2 transform -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-all duration-300 text-white hover:scale-110 opacity-70 hover:opacity-100"
               aria-label="Anterior"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +161,7 @@ export default function Hero() {
             
             <button 
               onClick={nextSlide}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-all duration-300 text-white hover:scale-110"
+              className="absolute right-1 md:right-1.5 lg:right-2 top-1/2 transform -translate-y-1/2 z-30 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full bg-black/20 backdrop-blur-sm hover:bg-black/40 transition-all duration-300 text-white hover:scale-110 opacity-70 hover:opacity-100"
               aria-label="Siguiente"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
