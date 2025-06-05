@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -12,10 +12,23 @@
     "@fontsource/fira-code": "^5.2.5",
     "@fontsource/inter": "^5.2.5",
     "@fontsource/jetbrains-mono": "^5.2.5",
+    "@hookform/resolvers": "^5.0.1",
+    "@tanstack/react-query": "^5.79.0",
+    "@types/axios": "^0.9.36",
+    "@types/js-cookie": "^3.0.6",
+    "axios": "^1.9.0",
+    "clsx": "^2.1.1",
     "front-hacker": "file:",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^0.511.0",
     "next": "^15.2.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.56.4",
+    "react-hot-toast": "^2.5.2",
+    "tailwind-merge": "^3.3.0",
+    "zod": "^3.25.42",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -34,6 +47,5 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs"
+  "license": "ISC"
 }

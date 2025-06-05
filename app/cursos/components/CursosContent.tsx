@@ -1,61 +1,70 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
-
-interface Curso {
-  id: number;
-  nombre: string;
-  descripcion: string;
-  imagen: string;
-  instructor: string;
-  fecha: string;
-  enlace: string;
-}
-
-// Datos simulados - en una aplicación real se obtendrían de API
-const cursos: Curso[] = [
-  {
-    id: 1,
-    nombre: 'Introducción a la Ciberseguridad',
-    descripcion: 'Aprende los fundamentos de la seguridad informática y las técnicas básicas para proteger sistemas y datos.',
-    imagen: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Y3liZXJzZWN1cml0eXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
-    instructor: 'Dr. Juan Pérez',
-    fecha: '15/04/2023',
-    enlace: 'https://example.com/curso1'
-  },
-  {
-    id: 2,
-    nombre: 'Hacking Ético',
-    descripcion: 'Descubre las herramientas y metodologías utilizadas por los pentester para evaluar la seguridad de los sistemas.',
-    imagen: 'https://images.unsplash.com/photo-1544890225-2f3faec4cd60?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGhhY2tlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
-    instructor: 'Ing. María Rodríguez',
-    fecha: '02/06/2023',
-    enlace: 'https://example.com/curso2'
-  },
-  {
-    id: 3,
-    nombre: 'Desarrollo Seguro de Aplicaciones',
-    descripcion: 'Aprende a diseñar y desarrollar aplicaciones teniendo en cuenta la seguridad desde el inicio del proceso.',
-    imagen: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Y29kaW5nfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-    instructor: 'Dr. Carlos López',
-    fecha: '10/08/2023',
-    enlace: 'https://example.com/curso3'
-  },
-  {
-    id: 4,
-    nombre: 'Análisis de Malware',
-    descripcion: 'Estudio de técnicas para analizar código malicioso y comprender su funcionamiento para mejorar la detección y prevención.',
-    imagen: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fHZpcnVzfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60',
-    instructor: 'Ing. Roberto Sánchez',
-    fecha: '05/10/2023',
-    enlace: 'https://example.com/curso4'
-  }
-];
+import { apiClient } from '@/lib/api'
+import { Curso } from '@/types/api'
 
 export default function CursosContent() {
+  const [cursos, setCursos] = useState<Curso[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [selectedCurso, setSelectedCurso] = useState<Curso | null>(null);
   const [activeCategory, setActiveCategory] = useState('Todos');
+
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        setLoading(true)
+        const data = await apiClient.getCursos()
+        setCursos(data.results)
+      } catch (error) {
+        console.error('Error fetching cursos:', error)
+        setError('Error al cargar los cursos')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCursos()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-primary to-gray-800 py-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Cursos de <span className="bg-gradient-to-r from-highlight to-accent bg-clip-text text-transparent">Formación</span>
+            </h1>
+            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+              Cargando cursos...
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-highlight"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-primary to-gray-800 py-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Cursos de <span className="bg-gradient-to-r from-highlight to-accent bg-clip-text text-transparent">Formación</span>
+            </h1>
+            <p className="text-lg text-red-400 max-w-3xl mx-auto">
+              {error}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const openModal = (curso: Curso) => {
     setSelectedCurso(curso);
@@ -64,7 +73,7 @@ export default function CursosContent() {
   const closeModal = () => {
     setSelectedCurso(null);
   };
-  
+
   const categories = ['Todos', 'Ciberseguridad', 'Desarrollo', 'Análisis'];
 
   return (
@@ -99,7 +108,7 @@ export default function CursosContent() {
         <div className="w-px h-32 bg-accent"></div>
         <div className="w-8 h-8 rounded-full border border-accent flex items-center justify-center mb-3 animate-bounce" style={{ animationDuration: '3s' }}>
           <svg className="w-4 h-4 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009" />
           </svg>
         </div>
         <div className="rotate-90 text-xs tracking-widest text-accent/70 font-mono">LEARNING</div>
@@ -147,32 +156,32 @@ export default function CursosContent() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {cursos.map((curso) => (
             <div 
-              key={curso.id} 
+              key={curso.idcursos} 
               className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group"
             >
               <div className="relative h-48 overflow-hidden">
                 <Image 
-                  src={curso.imagen} 
-                  alt={curso.nombre}
+                  src="/placeholder-course.png"
+                  alt={curso.nombre_curso}
                   fill={true}
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/90 to-transparent opacity-60"></div>
                 <div className="absolute bottom-4 left-4 bg-highlight/90 text-white text-xs py-1 px-3 rounded-full backdrop-blur-sm">
-                  {curso.fecha}
+                  {curso.fechainicial_curso ? new Date(curso.fechainicial_curso).toLocaleDateString('es-ES') : 'Próximamente'}
                 </div>
               </div>
               
               <div className="p-6">
-                <h2 className="text-xl font-bold mb-2 group-hover:text-highlight transition-colors duration-300">{curso.nombre}</h2>
-                <p className="text-sm text-foreground/80 mb-4">{curso.descripcion}</p>
+                <h2 className="text-xl font-bold mb-2 group-hover:text-highlight transition-colors duration-300">{curso.nombre_curso}</h2>
+                <p className="text-sm text-foreground/80 mb-4">{curso.descripcion_curso}</p>
                 
                 <div className="flex items-center mb-4">
                   <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center text-white mr-2">
-                    {curso.instructor.split(' ')[1][0]}
+                    <span className="text-sm font-bold">H</span>
                   </div>
-                  <p className="text-sm font-medium">{curso.instructor}</p>
+                  <p className="text-sm font-medium">H4ck3r L4bs Team</p>
                 </div>
                 
                 <button 
@@ -196,8 +205,8 @@ export default function CursosContent() {
           >
             <div className="relative h-72">
               <Image 
-                src={selectedCurso.imagen} 
-                alt={selectedCurso.nombre}
+                src="/placeholder-course.png"
+                alt={selectedCurso.nombre_curso}
                 fill={true}
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 1024px"
@@ -215,18 +224,18 @@ export default function CursosContent() {
               </button>
               
               <div className="absolute bottom-0 left-0 w-full p-6 z-10">
-                <h2 className="text-3xl font-bold mb-2 text-white">{selectedCurso.nombre}</h2>
+                <h2 className="text-3xl font-bold mb-2 text-white">{selectedCurso.nombre_curso}</h2>
                 <div className="flex items-center text-white/90">
                   <span className="bg-accent/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm mr-3">
-                    {selectedCurso.fecha}
+                    {selectedCurso.fechainicial_curso ? new Date(selectedCurso.fechainicial_curso).toLocaleDateString('es-ES') : 'Próximamente'}
                   </span>
-                  <span className="text-sm">Instructor: {selectedCurso.instructor}</span>
+                  <span className="text-sm">Instructor: H4ck3r L4bs Team</span>
                 </div>
               </div>
             </div>
             
             <div className="p-6">
-              <p className="mb-6 text-foreground/80">{selectedCurso.descripcion}</p>
+              <p className="mb-6 text-foreground/80">{selectedCurso.descripcion_curso}</p>
               
               <div className="bg-background/50 rounded-lg p-4 mb-6">
                 <h3 className="font-semibold mb-3 text-lg">Lo que aprenderás:</h3>
@@ -250,7 +259,7 @@ export default function CursosContent() {
                   Cerrar
                 </button>
                 <a 
-                  href={selectedCurso.enlace} 
+                  href={selectedCurso.link_curso} 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="bg-highlight hover:bg-highlight-dark text-white font-medium py-2 px-6 rounded-lg shadow-lg hover:shadow-highlight/30 transition-all duration-300 transform hover:-translate-y-0.5 text-center order-1 sm:order-2"
@@ -264,4 +273,4 @@ export default function CursosContent() {
       )}
     </div>
   );
-} 
+}

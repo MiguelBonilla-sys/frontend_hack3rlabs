@@ -2,129 +2,87 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-
-interface Noticia {
-  id: number;
-  titulo: string;
-  resumen: string;
-  contenido: string;
-  imagen: string;
-  fecha: string;
-  autor: string;
-  categoria: string;
-}
-
-// Datos simulados - en una aplicación real se obtendrían de API
-const noticias: Noticia[] = [
-  {
-    id: 1,
-    titulo: 'Descubierta nueva vulnerabilidad crítica en sistemas Linux',
-    resumen: 'Investigadores han identificado una vulnerabilidad de día cero que afecta a todas las distribuciones Linux basadas en kernel 5.15 y posteriores.',
-    contenido: `Un equipo de investigadores de seguridad ha descubierto una nueva vulnerabilidad crítica que afecta a los sistemas Linux con kernel 5.15 y versiones posteriores. La vulnerabilidad, denominada "StackRot" (CVE-2023-1234), permite a un atacante local escalar privilegios y obtener acceso root al sistema.
-
-    El fallo se encuentra en el subsistema de gestión de memoria y puede ser explotado mediante una secuencia específica de llamadas al sistema que provoca una condición de carrera. Los desarrolladores del kernel ya han publicado un parche que corrige el problema.
-
-    Se recomienda a todos los administradores de sistemas que actualicen sus servidores Linux lo antes posible. Las principales distribuciones, incluyendo Ubuntu, Debian, Red Hat y SUSE, ya han lanzado actualizaciones de seguridad.
-
-    Los sistemas que no pueden ser actualizados inmediatamente deberían implementar las mitigaciones recomendadas, que incluyen la desactivación de ciertos módulos del kernel y la restricción de acceso a determinadas llamadas al sistema mediante seccomp.`,
-    imagen: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-    fecha: '2023-03-15',
-    autor: 'Juan Pérez',
-    categoria: 'Vulnerabilidades'
-  },
-  {
-    id: 2,
-    titulo: 'La UE aprueba nueva legislación sobre ciberseguridad para dispositivos IoT',
-    resumen: 'El Parlamento Europeo ha aprobado una nueva normativa que establece requisitos mínimos de seguridad para todos los dispositivos conectados.',
-    contenido: `El Parlamento Europeo ha dado luz verde a una nueva legislación que obligará a los fabricantes de dispositivos IoT (Internet de las Cosas) a cumplir con estándares mínimos de ciberseguridad.
-
-    La normativa, conocida como "Cyber Resilience Act", establece que todos los productos conectados vendidos en el mercado europeo deberán incorporar:
-
-    • Protección contra accesos no autorizados
-    • Cifrado para las comunicaciones
-    • Actualizaciones de seguridad garantizadas durante al menos 5 años
-    • Documentación completa sobre las medidas de seguridad implementadas
-    • Proceso de divulgación responsable de vulnerabilidades
-
-    Los fabricantes tendrán un plazo de 24 meses para adaptar sus productos a la nueva regulación. Las empresas que incumplan podrían enfrentarse a multas de hasta el 15% de su facturación global.
-
-    Esta legislación busca abordar el creciente problema de los dispositivos IoT inseguros, que han sido utilizados en numerosas ocasiones para formar redes botnets y lanzar ataques DDoS a gran escala.
-
-    Según las estimaciones, para 2025 habrá más de 30.000 millones de dispositivos IoT conectados en todo el mundo, lo que subraya la importancia de garantizar su seguridad.`,
-    imagen: 'https://images.unsplash.com/photo-1558346490-a72e53ae2d4f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-    fecha: '2023-04-10',
-    autor: 'María Rodríguez',
-    categoria: 'Regulación'
-  },
-  {
-    id: 3,
-    titulo: 'Aumentan un 300% los ataques de ransomware dirigidos al sector sanitario',
-    resumen: 'Un nuevo informe revela un alarmante incremento de ataques ransomware contra hospitales y centros de salud durante el último trimestre.',
-    contenido: `Según el último informe publicado por CyberHealth Research, los ataques de ransomware dirigidos al sector sanitario han aumentado un 300% en el último trimestre, convirtiendo a hospitales y centros de salud en los principales objetivos de los ciberdelincuentes.
-
-    El informe destaca que más de 150 instituciones sanitarias en todo el mundo han sido víctimas de estos ataques, con un tiempo medio de inactividad de sistemas críticos de 9 días y un coste promedio de recuperación que supera los 2 millones de dólares.
-
-    Los grupos de ransomware más activos en este sector han sido REvil, DarkSide y Conti, que han modificado sus tácticas para ejercer mayor presión sobre las víctimas, combinando el cifrado de datos con la exfiltración y amenaza de publicación de información médica sensible.
-
-    El Dr. Javier Santos, uno de los autores del estudio, señala: "La pandemia ha acelerado la digitalización del sector sanitario sin que las medidas de seguridad hayan evolucionado al mismo ritmo, creando numerosas vulnerabilidades que los atacantes están aprovechando".
-
-    Entre las recomendaciones que proporciona el informe se incluyen:
-    • Implementación de autenticación multifactor
-    • Segmentación de redes
-    • Copias de seguridad regulares y desconectadas
-    • Formación continua del personal en seguridad informática
-    • Desarrollo de planes de respuesta a incidentes específicos para escenarios de ransomware`,
-    imagen: 'https://images.unsplash.com/photo-1516841273335-e39b37888115?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-    fecha: '2023-02-28',
-    autor: 'Carlos Montero',
-    categoria: 'Ataques'
-  },
-  {
-    id: 4,
-    titulo: 'Descubre las tendencias en ciberseguridad para 2023',
-    resumen: 'Expertos analizan las tecnologías y estrategias de seguridad que dominarán el panorama digital durante el próximo año.',
-    contenido: `El panorama de la ciberseguridad evoluciona constantemente, y 2023 promete ser un año de cambios significativos. Tras analizar los datos y tendencias del último año, los expertos destacan estas cinco áreas clave que dominarán el sector:
-
-    1. **Seguridad en entornos de nube distribuida**: Con el auge de arquitecturas multi-nube e híbridas, las organizaciones necesitarán implementar estrategias de seguridad unificadas que protejan los datos independientemente de su ubicación. Se espera un crecimiento del 45% en la adopción de soluciones CSPM (Cloud Security Posture Management) y CNAPP (Cloud-Native Application Protection Platform).
-
-    2. **Inteligencia Artificial defensiva y ofensiva**: La IA no solo será una herramienta para los defensores, sino también para los atacantes. Veremos un incremento en malware impulsado por IA capaz de adaptarse a las defensas y evadir la detección. Como respuesta, las soluciones de seguridad adoptarán algoritmos de aprendizaje más sofisticados para identificar comportamientos anómalos.
-
-    3. **Zero Trust generalizado**: El principio de "nunca confiar, siempre verificar" se convertirá en el estándar para las empresas de todos los tamaños. Un estudio reciente indica que el 75% de las organizaciones planea implementar arquitecturas Zero Trust completas en los próximos 18 meses.
-
-    4. **Seguridad de la cadena de suministro de software**: Tras los ataques a SolarWinds y Kaseya, la seguridad de la cadena de suministro será una prioridad absoluta. Se espera la adopción masiva de SBOMs (Software Bill of Materials) y herramientas de análisis automatizado de código.
-
-    5. **Protección de identidad avanzada**: Más allá del MFA tradicional, veremos nuevos enfoques como la autenticación continua y basada en comportamiento. Las tecnologías de verificación biométrica y sin contraseñas experimentarán un crecimiento del 60%.
-
-    Eduardo Vázquez, CISO de CyberDefense Global, comenta: "Las organizaciones deben prepararse para un ecosistema de amenazas más complejo y sofisticado. La buena noticia es que disponemos de tecnologías defensivas cada vez más avanzadas. La clave está en implementarlas correctamente y mantener un enfoque proactivo frente a la seguridad."`,
-    imagen: 'https://images.unsplash.com/photo-1591696205602-2f950c417cb9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-    fecha: '2023-01-15',
-    autor: 'Laura Gómez',
-    categoria: 'Tendencias'
-  }
-];
+import { apiClient } from '@/lib/api'
+import { Noticia } from '@/types/api'
 
 export default function NoticiasContent() {
+  const [noticias, setNoticias] = useState<Noticia[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [selectedNoticia, setSelectedNoticia] = useState<Noticia | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategoria, setFilterCategoria] = useState('');
   const [categorias, setCategorias] = useState<string[]>([]);
 
-  // Extraer categorías únicas
   useEffect(() => {
-    const categoriasObj: Record<string, boolean> = {};
-    noticias.forEach(noticia => {
-      categoriasObj[noticia.categoria] = true;
-    });
-    setCategorias(Object.keys(categoriasObj).sort());
-  }, []);
+    const fetchNoticias = async () => {
+      try {
+        setLoading(true)
+        const data = await apiClient.getNoticias()
+        setNoticias(data.results)
+        
+        // Extraer categorías únicas
+        const categoriasObj: Record<string, boolean> = {};
+        data.results.forEach(noticia => {
+          if (noticia.categoria) {
+            categoriasObj[noticia.categoria] = true;
+          }
+        });
+        setCategorias(Object.keys(categoriasObj).sort((a, b) => a.localeCompare(b)));
+      } catch (error) {
+        console.error('Error fetching noticias:', error)
+        setError('Error al cargar las noticias')
+      } finally {
+        setLoading(false)
+      }
+    }
 
+    fetchNoticias()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-primary to-gray-800 py-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Últimas <span className="bg-gradient-to-r from-highlight to-accent bg-clip-text text-transparent">Noticias</span>
+            </h1>
+            <p className="text-lg text-gray-300 max-w-3xl mx-auto">
+              Cargando noticias...
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-highlight"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-primary to-gray-800 py-32">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              Últimas <span className="bg-gradient-to-r from-highlight to-accent bg-clip-text text-transparent">Noticias</span>
+            </h1>
+            <p className="text-lg text-red-400 max-w-3xl mx-auto">
+              {error}
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
   // Filtrar noticias
   const filteredNoticias = noticias.filter(noticia => {
-    const matchesCategoria = filterCategoria === '' || noticia.categoria === filterCategoria;
+    const matchesCategoria = filterCategoria === '' || (noticia.categoria && noticia.categoria === filterCategoria);
     const matchesSearch = searchTerm === '' || 
-      noticia.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      noticia.resumen.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      noticia.contenido.toLowerCase().includes(searchTerm.toLowerCase());
+      noticia.nombre_noticia.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      noticia.description_noticia.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      noticia.contenido?.toLowerCase().includes(searchTerm.toLowerCase());
     
     return matchesCategoria && matchesSearch;
   });
@@ -245,8 +203,11 @@ export default function NoticiasContent() {
             </div>
           </div>
           
-          {(filterCategoria || searchTerm) && (
-            <div className="mt-4 flex justify-end">
+          {(searchTerm || filterCategoria) && (
+            <div className="mt-4 flex items-center justify-between">
+              <p className="text-sm text-foreground/60">
+                Mostrando {filteredNoticias.length} de {noticias.length} noticias
+              </p>
               <button 
                 onClick={clearFilters}
                 className="px-4 py-2 bg-card-hover hover:bg-card-dark text-foreground rounded-lg transition-colors duration-300 flex items-center gap-2 text-sm"
@@ -265,38 +226,39 @@ export default function NoticiasContent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {filteredNoticias.map((noticia) => (
               <div 
-                key={noticia.id} 
+                key={noticia.idnoticia} 
                 className="bg-card rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group cursor-pointer"
                 onClick={() => openModal(noticia)}
               >
                 <div className="relative h-48 overflow-hidden">
                   <Image 
-                    src={noticia.imagen} 
-                    alt={noticia.titulo}
+                    src={noticia.imagen_noticia} 
+                    alt={noticia.nombre_noticia}
                     fill={true}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover transform group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
                   <div className="absolute bottom-0 left-0 p-4 w-full">
-                    <span className="inline-block px-3 py-1 bg-highlight/90 text-white text-xs rounded-full backdrop-blur-sm mb-2">
-                      {noticia.categoria}
-                    </span>
+                    {noticia.categoria && (
+                      <span className="inline-block px-3 py-1 bg-highlight/90 text-white text-xs rounded-full backdrop-blur-sm mb-2">
+                        {noticia.categoria}
+                      </span>
+                    )}
                     <h2 className="text-xl font-bold text-white mb-1 line-clamp-2 group-hover:text-highlight-light transition-colors">
-                      {noticia.titulo}
+                      {noticia.nombre_noticia}
                     </h2>
                   </div>
                 </div>
                 <div className="p-5">
-                  <p className="text-sm text-foreground/80 mb-4 line-clamp-3">{noticia.resumen}</p>
+                  <p className="text-sm text-foreground/80 mb-4 line-clamp-3">{noticia.description_noticia}</p>
                   <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div className="w-8 h-8 rounded-full bg-highlight/20 flex items-center justify-center text-highlight mr-2">
-                        {noticia.autor.charAt(0)}
+                    <div className="flex items-center">                      <div className="w-8 h-8 rounded-full bg-highlight/20 flex items-center justify-center text-highlight mr-2">
+                        {noticia.autor ? noticia.autor.charAt(0) : 'U'}
                       </div>
                       <div>
-                        <p className="text-sm font-medium">{noticia.autor}</p>
-                        <p className="text-xs text-foreground/60">{formatDate(noticia.fecha)}</p>
+                        <p className="text-sm font-medium">{noticia.autor ?? 'Usuario'}</p>
+                        <p className="text-xs text-foreground/60">{formatDate(noticia.fecha_noticia)}</p>
                       </div>
                     </div>
                     <button className="text-highlight flex items-center gap-1 text-sm group-hover:translate-x-1 transition-transform duration-300">
@@ -339,27 +301,28 @@ export default function NoticiasContent() {
               <div className="relative">
                 <div className="h-64 md:h-80 relative overflow-hidden">
                   <Image 
-                    src={selectedNoticia.imagen} 
-                    alt={selectedNoticia.titulo}
+                    src={selectedNoticia.imagen_noticia} 
+                    alt={selectedNoticia.nombre_noticia}
                     fill={true}
                     sizes="100vw"
                     className="object-cover"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
                   <div className="absolute bottom-0 left-0 p-6 w-full">
-                    <span className="inline-block px-3 py-1 bg-highlight/90 text-white text-xs rounded-full backdrop-blur-sm mb-2">
-                      {selectedNoticia.categoria}
-                    </span>
-                    <h2 className="text-2xl md:text-3xl font-bold text-white">{selectedNoticia.titulo}</h2>
-                    <div className="flex items-center mt-4 text-white/90">
-                      <div className="w-8 h-8 rounded-full bg-highlight/20 flex items-center justify-center text-white mr-2">
-                        {selectedNoticia.autor.charAt(0)}
+                    {selectedNoticia.categoria && (
+                      <span className="inline-block px-3 py-1 bg-highlight/90 text-white text-xs rounded-full backdrop-blur-sm mb-2">
+                        {selectedNoticia.categoria}
+                      </span>
+                    )}
+                    <h2 className="text-2xl md:text-3xl font-bold text-white">{selectedNoticia.nombre_noticia}</h2>
+                    <div className="flex items-center mt-4 text-white/90">                      <div className="w-8 h-8 rounded-full bg-highlight/20 flex items-center justify-center text-white mr-2">
+                        {selectedNoticia.autor ? selectedNoticia.autor.charAt(0) : 'U'}
                       </div>
-                      <span className="mr-4">{selectedNoticia.autor}</span>
+                      <span className="mr-4">{selectedNoticia.autor ?? 'Usuario'}</span>
                       <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
-                      <span>{formatDate(selectedNoticia.fecha)}</span>
+                      <span>{formatDate(selectedNoticia.fecha_noticia)}</span>
                     </div>
                   </div>
                 </div>
@@ -375,11 +338,28 @@ export default function NoticiasContent() {
               </div>
               <div className="p-6 md:p-8">
                 <p className="text-lg italic text-foreground/80 mb-6 border-l-4 border-highlight pl-4 py-2">
-                  {selectedNoticia.resumen}
+                  {selectedNoticia.description_noticia}
                 </p>
-                <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-line">
-                  {selectedNoticia.contenido}
-                </div>
+                {selectedNoticia.contenido && (
+                  <div className="prose prose-lg max-w-none text-foreground/90 whitespace-pre-line">
+                    {selectedNoticia.contenido}
+                  </div>
+                )}
+                {selectedNoticia.link_noticia && (
+                  <div className="mt-6">
+                    <a 
+                      href={selectedNoticia.link_noticia} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-highlight text-white rounded-lg hover:bg-highlight-dark transition-colors duration-300"
+                    >
+                      <span>Ver noticia completa</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                )}
                 <div className="mt-8 flex justify-end">
                   <button 
                     onClick={closeModal}
@@ -395,4 +375,4 @@ export default function NoticiasContent() {
       </div>
     </div>
   );
-} 
+}

@@ -39,9 +39,7 @@ export default function Header() {
               </span>
               <div className="ml-2 w-2 h-2 rounded-full bg-highlight animate-pulse"></div>
             </div>
-          </Link>
-
-          {/* Navegación Desktop - Centrada */}
+          </Link>          {/* Navegación Desktop - Centrada */}
           <nav className="hidden md:flex justify-center space-x-1 flex-grow">
             {[
               { name: 'Inicio', href: '/' },
@@ -113,8 +111,7 @@ export default function Header() {
             ? 'max-h-screen py-5 opacity-100' 
             : 'max-h-0 py-0 opacity-0'
         }`}
-      >
-        <div className="max-w-6xl mx-auto px-4 flex flex-col space-y-3">
+      >        <div className="max-w-6xl mx-auto px-4 flex flex-col space-y-3">
           {[
             { name: 'Inicio', href: '/' },
             { name: 'Cursos', href: '/cursos' },

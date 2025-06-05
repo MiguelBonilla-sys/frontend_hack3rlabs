@@ -2,7 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['randomuser.me', 'images.unsplash.com', 'github.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -17,6 +16,16 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'github.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'res.cloudinary.com',
         pathname: '**',
       },
     ],
