@@ -10,6 +10,7 @@ import { Noticia } from '@/types/api';
 import { useAuth } from '@/lib/auth';
 import FileUpload from '@/components/admin/FileUpload';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 const noticiaSchema = z.object({
   nombre_noticia: z.string().min(1, 'El título es requerido'),
@@ -221,10 +222,12 @@ export default function EditNoticiaPage() {
             {noticia.imagen_noticia && !imageFile && (
               <div className="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-sm text-gray-600 mb-2">Imagen actual:</p>
-                <img
+                <Image
                   src={noticia.imagen_noticia}
-                  alt="Imagen actual"
-                  className="h-32 w-48 object-cover rounded-lg"
+                  alt={noticia.nombre_noticia || 'Imagen de la noticia'}
+                  width={256}
+                  height={160}
+                  className="rounded-lg w-64 h-40 object-cover"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1585776245991-cf89dd7fc73a?w=400&h=300&fit=crop&crop=center';
                   }}

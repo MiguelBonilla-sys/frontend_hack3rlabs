@@ -10,11 +10,14 @@ import {
   Proyecto, 
   Integrante, 
   OfertaEmpleo, 
-  Conferencia 
+  Conferencia,
+  Permissions
 } from '@/types/api';
 
 class APIClient {
-  private readonly client: ReturnType<typeof axios.create>;  constructor() {
+  private readonly client: ReturnType<typeof axios.create>;
+  
+  constructor() {
     this.client = axios.create({
       baseURL: process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://apihack3r-production.up.railway.app',
       timeout: 10000,
@@ -535,11 +538,35 @@ class APIClient {
   }
 
   // Método para registro (según especificaciones de Railway)
+  async register(email: string, password: string): Promise<LoginResponse>;
   async register(userData: {
     username: string;
     email: string;
     password: string;
-  }) {
+  }): Promise<LoginResponse>;
+  async register(emailOrUserData: string | {
+    username: string;
+    email: string;
+    password: string;
+  }, password?: string): Promise<LoginResponse> {
+    let userData: {
+      username: string;
+      email: string;
+      password: string;
+    };
+
+    if (typeof emailOrUserData === 'string' && password) {
+      userData = {
+        username: emailOrUserData.split('@')[0], // Use email prefix as username
+        email: emailOrUserData,
+        password: password
+      };
+    } else if (typeof emailOrUserData === 'object') {
+      userData = emailOrUserData;
+    } else {
+      throw new Error('Invalid parameters for register method');
+    }
+
     console.log('📝 Enviando registro request a Railway:', {
       endpoint: '/auth/registration/',
       username: userData.username,
@@ -568,6 +595,35 @@ class APIClient {
 
   async checkAuthStatus() {
     return this.post<AuthStatusResponse>('/api/hl4/v1/auth-status/', {});
+  }
+
+  async getUserPermissions(): Promise<Permissions> {
+    const response = await this.client.get<Permissions>('/auth/permissions/');
+    return response.data;
+  }
+
+  async uploadImage(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await axios.post('/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return (response.data as { url: string }).url;
+  }
+
+  // Métodos faltantes para compatibilidad
+  async getCurrentUser(): Promise<User> {
+    return this.getProfile();
+  }
+
+  setToken(token: string): void {
+    Cookies.set('auth_token', token, { expires: 7 });
+  }
+
+  clearToken(): void {
+    Cookies.remove('auth_token');
   }
 }
 

@@ -19,13 +19,15 @@ const noticiaSchema = z.object({
   categoria: z.string().optional(),
   autor: z.string().optional(),
   contenido: z.string().optional(),
+  imagen_noticia: z.any().optional().refine((file) => !file || file instanceof File, {
+    message: 'La imagen debe ser un archivo válido',
+  }),
 });
 
 type NoticiaForm = z.infer<typeof noticiaSchema>;
 
 export default function NuevaNoticiaPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const [error, setError] = useState<string>('');
   const router = useRouter();
   const { user } = useAuth();
@@ -33,6 +35,7 @@ export default function NuevaNoticiaPage() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<NoticiaForm>({
     resolver: zodResolver(noticiaSchema),
@@ -50,21 +53,19 @@ export default function NuevaNoticiaPage() {
         throw new Error('Usuario no autenticado');
       }
 
+      // Subir la imagen a Cloudinary y obtener la URL
+      const imageUrl = await apiClient.uploadImage(data.imagen_noticia as File);
+
       const processedData = {
         ...data,
         creador: user.id,
+        imagen_noticia: imageUrl, // Enviar la URL de la imagen
       };
 
-      console.log('📝 Creando noticia con datos:', processedData);
-      console.log('🖼️ Archivo de imagen:', imageFile);
-
-      // Usar el método con archivo
-      await apiClient.createNoticiaWithFile(processedData, imageFile || undefined);
-      
-      console.log('✅ Noticia creada exitosamente');
+      // Usar el método con la URL de la imagen
+      await apiClient.createNoticia(processedData);
       router.push('/admin/noticias');
     } catch (error) {
-      console.error('❌ Error creating noticia:', error);
       const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
       setError(`Error al crear la noticia: ${errorMessage}`);
     } finally {
@@ -73,11 +74,10 @@ export default function NuevaNoticiaPage() {
   };
 
   const handleFileSelect = (file: File | null) => {
-    setImageFile(file);
-    console.log('📁 Archivo seleccionado:', file?.name);
+    if (file) {
+      setValue('imagen_noticia', file);
+    }
   };
-
-
 
   return (
     <div className="space-y-6">
@@ -221,16 +221,14 @@ export default function NuevaNoticiaPage() {
             {/* Imagen */}
             <div className="sm:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Imagen de la Noticia
+                Imagen de la Noticia *
               </label>
-              <FileUpload
-                onFileSelect={handleFileSelect}
-                currentFile={imageFile}
-                accept="image/*"
-              />
-              <p className="mt-2 text-xs text-gray-500">
-                Sube una imagen para la noticia
-              </p>
+              <FileUpload onFileSelect={handleFileSelect} accept="image/*" />
+              {errors.imagen_noticia && (
+                <p className="mt-1 text-sm text-red-600">
+                  {String(errors.imagen_noticia.message)}
+                </p>
+              )}
             </div>
 
             {/* Contenido completo */}

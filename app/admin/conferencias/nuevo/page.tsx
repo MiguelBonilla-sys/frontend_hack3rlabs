@@ -16,6 +16,9 @@ const conferenciaSchema = z.object({
   descripcion_conferencia: z.string().min(1, 'La descripción es requerida'),
   fecha_conferencia: z.string().min(1, 'La fecha es requerida'),
   link_conferencia: z.string().url('Debe ser una URL válida').min(1, 'El link es requerido'),
+  imagen_conferencia: z.any().optional().refine((file) => !file || file instanceof File, {
+    message: 'La imagen debe ser un archivo válido',
+  }),
 });
 
 type ConferenciaForm = z.infer<typeof conferenciaSchema>;
@@ -23,15 +26,15 @@ type ConferenciaForm = z.infer<typeof conferenciaSchema>;
 export default function NuevaConferencia() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const router = useRouter();
   const { user } = useAuth();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm<ConferenciaForm>({
+  } = useForm({
     resolver: zodResolver(conferenciaSchema),
   });
 
@@ -44,21 +47,19 @@ export default function NuevaConferencia() {
         throw new Error('Usuario no autenticado');
       }
 
+      // Subir la imagen a Cloudinary y obtener la URL
+      const imageUrl = await apiClient.uploadImage(data.imagen_conferencia as File);
+
       const processedData = {
         ...data,
         creador: user.id,
+        imagen_conferencia: imageUrl, // Enviar la URL de la imagen
       };
 
-      console.log('📝 Creando conferencia con datos:', processedData);
-      console.log('🖼️ Archivo de imagen:', imageFile);
-
-      // Usar el método con archivo
-      await apiClient.createConferenciaWithFile(processedData, imageFile || undefined);
-      
-      console.log('✅ Conferencia creada exitosamente');
+      // Usar el método con la URL de la imagen
+      await apiClient.createConferencia(processedData);
       router.push('/admin/conferencias');
     } catch (err) {
-      console.error('❌ Error creating conferencia:', err);
       const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
       setError(`Error al crear la conferencia: ${errorMessage}`);
     } finally {
@@ -67,8 +68,9 @@ export default function NuevaConferencia() {
   };
 
   const handleFileSelect = (file: File | null) => {
-    setImageFile(file);
-    console.log('📁 Archivo seleccionado:', file?.name);
+    if (file) {
+      setValue('imagen_conferencia', file);
+    }
   };
 
   // Fecha y hora mínima (ahora)
@@ -117,7 +119,7 @@ export default function NuevaConferencia() {
               />
               {errors.nombre_conferencia && (
                 <p className="mt-1 text-sm text-red-600">
-                  {errors.nombre_conferencia.message}
+                  {errors.nombre_conferencia?.message?.toString()}
                 </p>
               )}
             </div>
@@ -199,16 +201,14 @@ export default function NuevaConferencia() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Imagen de la Conferencia
+              Imagen de la Conferencia *
             </label>
-            <FileUpload
-              onFileSelect={handleFileSelect}
-              currentFile={imageFile}
-              accept="image/*"
-            />
-            <p className="mt-2 text-xs text-gray-500">
-              Sube una imagen promocional para la conferencia
-            </p>
+            <FileUpload onFileSelect={handleFileSelect} accept="image/*" />
+            {errors.imagen_conferencia && (
+              <p className="mt-1 text-sm text-red-600">
+                {String(errors.imagen_conferencia.message)}
+              </p>
+            )}
           </div>
 
           <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">

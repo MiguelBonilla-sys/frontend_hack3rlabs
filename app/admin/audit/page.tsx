@@ -1,11 +1,11 @@
-"use client";
+  "use client";
 
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { Badge } from "@/components/ui/Badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import { CheckCircle, XCircle, Activity, Database, Users, Clock, TestTube } from "lucide-react";
 
 interface AuditLog {
@@ -15,7 +15,7 @@ interface AuditLog {
   tabla: string;
   accion: string;
   record_id: number;
-  datos: any;
+  datos: Record<string, unknown>;
 }
 
 interface AuditStatus {
@@ -26,7 +26,17 @@ interface AuditStatus {
   tablas_auditadas: string[];
   logs_por_tabla: Array<{ table_name: string; count: number }>;
   logs_por_tipo: Array<{ change_type: string; count: number }>;
-  ultimos_logs: any[];
+  ultimos_logs: AuditLog[];
+}
+
+interface TestResult {
+  status: string;
+  message: string;
+  details?: Record<string, unknown>;
+  logs_before?: number;
+  logs_after?: number;
+  logs_final?: number;
+  triggers_tested?: string[];
 }
 
 export default function AuditPage() {
@@ -34,7 +44,7 @@ export default function AuditPage() {
   const [recentLogs, setRecentLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
   const [testing, setTesting] = useState(false);
-  const [testResult, setTestResult] = useState<any>(null);
+  const [testResult, setTestResult] = useState<TestResult | null>(null);
 
   const fetchAuditStatus = async () => {
     try {

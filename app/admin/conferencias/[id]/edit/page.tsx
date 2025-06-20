@@ -10,6 +10,7 @@ import { Conferencia } from '@/types/api';
 import { useAuth } from '@/lib/auth';
 import FileUpload from '@/components/admin/FileUpload';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 const conferenciaSchema = z.object({
   nombre_conferencia: z.string().min(1, 'El nombre es requerido'),
@@ -261,9 +262,11 @@ export default function EditConferenciaPage() {
               <div className="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-sm text-gray-600 mb-3 font-medium">📸 Imagen actual:</p>
                 <div className="flex justify-center">
-                  <img
+                  <Image
                     src={conferencia.imagen_conferencia}
                     alt="Imagen actual de la conferencia"
+                    width={200}
+                    height={200}
                     className="h-48 w-72 object-cover rounded-lg shadow-md border border-gray-300"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=300&fit=crop&crop=center';
@@ -281,9 +284,11 @@ export default function EditConferenciaPage() {
               <div className="mb-4 p-4 border border-green-200 rounded-lg bg-green-50">
                 <p className="text-sm text-green-700 mb-3 font-medium">🆕 Nueva imagen seleccionada:</p>
                 <div className="flex justify-center">
-                  <img
+                  <Image
                     src={URL.createObjectURL(imageFile)}
                     alt="Preview de nueva imagen"
+                    width={200}
+                    height={200}
                     className="h-48 w-72 object-cover rounded-lg shadow-md border border-green-300"
                   />
                 </div>

@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Upload, X, Loader2, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 
 interface ImageUploadProps {
   onUploadComplete: (url: string) => void;
@@ -114,14 +115,7 @@ export default function ImageUpload({
         <div className="flex items-center justify-center">
           {previewUrl ? (
             <div className="relative w-full h-32 border border-gray-300 rounded-lg overflow-hidden">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face';
-                }}
-              />
+              <Image src={previewUrl} alt="Preview" width={128} height={128} className="rounded object-cover" />
               <button
                 type="button"
                 onClick={removeImage}
@@ -175,11 +169,7 @@ export default function ImageUpload({
             className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             disabled={isConverting}
           >
-            <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face"
-              alt="Desarrollador 1"
-              className="w-full h-12 object-cover rounded"
-            />
+            <Image src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&h=60&fit=crop&crop=face" alt="Desarrollador 1" width={60} height={60} className="rounded object-cover" />
             <p className="text-xs text-gray-600 mt-1">Desarrollador</p>
           </button>
           
@@ -189,11 +179,7 @@ export default function ImageUpload({
             className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             disabled={isConverting}
           >
-            <img
-              src="https://images.unsplash.com/photo-1494790108755-2616b9c3dd15?w=60&h=60&fit=crop&crop=face"
-              alt="Desarrolladora 1"
-              className="w-full h-12 object-cover rounded"
-            />
+            <Image src="https://images.unsplash.com/photo-1494790108755-2616b9c3dd15?w=60&h=60&fit=crop&crop=face" alt="Desarrolladora 1" width={60} height={60} className="rounded object-cover" />
             <p className="text-xs text-gray-600 mt-1">Desarrolladora</p>
           </button>
 
@@ -203,11 +189,7 @@ export default function ImageUpload({
             className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             disabled={isConverting}
           >
-            <img
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face"
-              alt="Desarrollador 2"
-              className="w-full h-12 object-cover rounded"
-            />
+            <Image src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&h=60&fit=crop&crop=face" alt="Desarrollador 2" width={60} height={60} className="rounded object-cover" />
             <p className="text-xs text-gray-600 mt-1">Programador</p>
           </button>
 
@@ -217,11 +199,7 @@ export default function ImageUpload({
             className="p-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
             disabled={isConverting}
           >
-            <img
-              src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60&h=60&fit=crop&crop=face"
-              alt="Desarrolladora 2"
-              className="w-full h-12 object-cover rounded"
-            />
+            <Image src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=60&h=60&fit=crop&crop=face" alt="Desarrolladora 2" width={60} height={60} className="rounded object-cover" />
             <p className="text-xs text-gray-600 mt-1">Ingeniera</p>
           </button>
         </div>

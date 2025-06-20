@@ -10,6 +10,7 @@ import { OfertaEmpleo } from '@/types/api';
 import { useAuth } from '@/lib/auth';
 import FileUpload from '@/components/admin/FileUpload';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 const ofertaSchema = z.object({
   titulo_empleo: z.string().min(1, 'El título es requerido'),
@@ -224,13 +225,12 @@ export default function EditOfertaPage() {
             {oferta.imagen && !imageFile && (
               <div className="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-sm text-gray-600 mb-2">Logo actual:</p>
-                <img
+                <Image
                   src={oferta.imagen}
                   alt="Logo actual"
-                  className="h-20 w-32 object-contain rounded-lg"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1560472355-536de3962603?w=400&h=300&fit=crop&crop=center';
-                  }}
+                  width={256}
+                  height={160}
+                  className="rounded-lg w-64 h-40 object-cover"
                 />
               </div>
             )}

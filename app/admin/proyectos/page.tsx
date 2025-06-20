@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiClient } from '@/lib/api';
 import { Proyecto, PaginatedResponse } from '@/types/api';
@@ -20,7 +20,7 @@ export default function ProyectosAdminPage() {
 
   const router = useRouter();
 
-  const fetchProyectos = async () => {
+  const fetchProyectos = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await apiClient.getProyectos({
@@ -33,11 +33,11 @@ export default function ProyectosAdminPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [search, currentPage]);
 
   useEffect(() => {
     fetchProyectos();
-  }, [search, currentPage]);
+  }, [fetchProyectos]);
 
   const handleDelete = async (id: number) => {
     if (confirm('¿Estás seguro de que quieres eliminar este proyecto?')) {
@@ -55,13 +55,13 @@ export default function ProyectosAdminPage() {
     {
       key: 'nombre_proyecto',
       title: 'Proyecto',
-      render: (value: string, item: Proyecto) => (
+      render: (row: Proyecto) => (
         <div>
           <div className="font-medium text-gray-900">
-            {value}
+            {row.nombre_proyecto}
           </div>
           <div className="text-sm text-gray-500 truncate max-w-xs">
-            {item.description_proyecto}
+            {row.description_proyecto}
           </div>
         </div>
       ),
@@ -69,18 +69,18 @@ export default function ProyectosAdminPage() {
     {
       key: 'fecha_proyecto',
       title: 'Fecha',
-      render: (value: string) => (
+      render: (row: Proyecto) => (
         <span className="text-sm text-gray-600">
-          {new Date(value).toLocaleDateString('es-ES')}
+          {new Date(row.fecha_proyecto).toLocaleDateString('es-ES')}
         </span>
       ),
     },
     {
       key: 'link_proyecto',
       title: 'Link',
-      render: (value: string) => (
+      render: (row: Proyecto) => (
         <a
-          href={value}
+          href={row.link_proyecto}
           target="_blank"
           rel="noopener noreferrer"
           className="text-green-600 hover:text-green-700 flex items-center gap-1"
@@ -93,26 +93,26 @@ export default function ProyectosAdminPage() {
     {
       key: 'integrantes',
       title: 'Integrantes',
-      render: (value: number[]) => (
+      render: (row: Proyecto) => (
         <span className="text-sm text-gray-600">
-          {value?.length || 0} miembro(s)
+          {row.integrantes?.length || 0} miembro(s)
         </span>
       ),
     },
     {
       key: 'actions',
       title: 'Acciones',
-      render: (_: unknown, item: Proyecto) => (
+      render: (row: Proyecto) => (
         <div className="flex space-x-2">
           <button
-            onClick={() => router.push(`/admin/proyectos/${item.idproyectos}/edit`)}
+            onClick={() => router.push(`/admin/proyectos/${row.idproyectos}/edit`)}
             className="text-blue-600 hover:text-blue-700"
             title="Editar proyecto"
           >
             <Edit className="h-4 w-4" />
           </button>
           <button
-            onClick={() => handleDelete(item.idproyectos)}
+            onClick={() => handleDelete(row.idproyectos)}
             className="text-red-600 hover:text-red-700"
             title="Eliminar proyecto"
           >
@@ -161,8 +161,8 @@ export default function ProyectosAdminPage() {
         columns={columns}
         isLoading={isLoading}
         pagination={{
-          current: currentPage,
-          total: Math.ceil(proyectos.count / 20),
+          currentPage,
+          totalPages: Math.ceil(proyectos.count / 10),
           onPageChange: setCurrentPage,
         }}
       />

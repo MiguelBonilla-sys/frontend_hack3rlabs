@@ -20,6 +20,9 @@ const integranteSchema = z.object({
     (url) => url.includes('github.com'),
     'Debe ser una URL de GitHub válida'
   ),
+  imagen: z.any().optional().refine((file) => !file || file instanceof File, {
+    message: 'La imagen debe ser un archivo válido',
+  }),
 });
 
 type IntegranteForm = z.infer<typeof integranteSchema>;
@@ -27,13 +30,13 @@ type IntegranteForm = z.infer<typeof integranteSchema>;
 export default function NuevoIntegrante() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
   const router = useRouter();
   const { user } = useAuth();
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<IntegranteForm>({
     resolver: zodResolver(integranteSchema),
@@ -51,21 +54,19 @@ export default function NuevoIntegrante() {
         throw new Error('Usuario no autenticado');
       }
 
+      // Subir la imagen a Cloudinary y obtener la URL
+      const imageUrl = await apiClient.uploadImage(data.imagen as File);
+
       const processedData = {
         ...data,
         creador: user.id,
+        imagen: imageUrl, // Enviar la URL de la imagen
       };
 
-      console.log('📝 Creando integrante con datos:', processedData);
-      console.log('🖼️ Archivo de imagen:', imageFile);
-
-      // Usar el método con archivo
-      await apiClient.createIntegranteWithFile(processedData, imageFile || undefined);
-      
-      console.log('✅ Integrante creado exitosamente');
+      // Usar el método con la URL de la imagen
+      await apiClient.createIntegrante(processedData);
       router.push('/admin/integrantes');
     } catch (err) {
-      console.error('❌ Error creating integrante:', err);
       const errorMessage = err instanceof Error ? err.message : 'Error desconocido';
       setError(`Error al crear el integrante: ${errorMessage}`);
     } finally {
@@ -74,8 +75,9 @@ export default function NuevoIntegrante() {
   };
 
   const handleFileSelect = (file: File | null) => {
-    setImageFile(file);
-    console.log('📁 Archivo seleccionado:', file?.name);
+    if (file) {
+      setValue('imagen', file);
+    }
   };
 
   return (
@@ -219,16 +221,14 @@ export default function NuevoIntegrante() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Foto de Perfil
+              Imagen del Integrante *
             </label>
-            <FileUpload
-              onFileSelect={handleFileSelect}
-              currentFile={imageFile}
-              accept="image/*"
-            />
-            <p className="mt-2 text-xs text-gray-500">
-              Sube una foto de perfil del integrante
-            </p>
+            <FileUpload onFileSelect={handleFileSelect} accept="image/*" />
+                          {errors.imagen && (
+                <p className="mt-1 text-sm text-red-600">
+                  {String(errors.imagen.message)}
+                </p>
+              )}
           </div>
 
           <div className="flex justify-end gap-4 pt-6 border-t border-gray-200">

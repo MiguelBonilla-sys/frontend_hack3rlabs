@@ -47,6 +47,10 @@ export default function NuevaOferta() {
       const processedData = {
         ...data,
         creador: user.id,
+        imagen: '', // Will be handled by the backend
+        fecha_publicacion: new Date().toISOString(),
+        ubicacion: 'No especificada',
+        modalidad: 'remoto' as const,
       };
 
       console.log('📝 Creando oferta con datos:', processedData);

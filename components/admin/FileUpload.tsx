@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
+import Image from 'next/image';
 
 interface FileUploadProps {
   onFileSelect: (file: File | null) => void;
@@ -108,11 +109,7 @@ export default function FileUpload({
           {currentFile || previewUrl ? (
             <div className="space-y-2">
               {preview && previewUrl && (
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  className="mx-auto h-24 w-24 object-cover rounded-lg"
-                />
+                <Image src={previewUrl} alt="Preview" width={64} height={64} className="rounded object-cover" />
               )}
               <div className="flex items-center justify-center gap-2">
                 <ImageIcon className="h-4 w-4 text-green-600" />

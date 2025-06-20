@@ -10,6 +10,7 @@ import { Integrante } from '@/types/api';
 import { useAuth } from '@/lib/auth';
 import FileUpload from '@/components/admin/FileUpload';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 const integranteSchema = z.object({
   nombre_integrante: z.string().min(1, 'El nombre es requerido'),
@@ -244,13 +245,12 @@ export default function EditIntegrantePage() {
             {integrante.imagen && !imageFile && (
               <div className="mb-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
                 <p className="text-sm text-gray-600 mb-2">Imagen actual:</p>
-                <img
+                <Image
                   src={integrante.imagen}
                   alt="Imagen actual"
-                  className="h-32 w-32 object-cover rounded-full"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=center';
-                  }}
+                  width={128}
+                  height={128}
+                  className="rounded-full w-32 h-32 object-cover"
                 />
               </div>
             )}

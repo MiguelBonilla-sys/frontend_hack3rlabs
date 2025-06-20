@@ -2,6 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { Upload, X, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 interface CloudinaryUploadProps {
   onUploadComplete: (url: string) => void;
@@ -181,14 +182,7 @@ export default function CloudinaryUpload({
         <div className="relative">
           <div className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
             <div className="flex items-center space-x-3">
-              <img
-                src={previewUrl}
-                alt="Preview"
-                className="w-16 h-16 object-cover rounded-md"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face';
-                }}
-              />
+              <Image src={previewUrl} alt="Vista previa" width={200} height={200} className="rounded-lg object-cover" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
                   Imagen cargada

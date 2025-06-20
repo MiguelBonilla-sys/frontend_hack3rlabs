@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { apiClient } from '@/lib/api';
 import { Integrante, PaginatedResponse } from '@/types/api';
 import DataTable from '@/components/admin/DataTable';
@@ -20,7 +21,7 @@ export default function IntegrantesAdminPage() {
 
   const router = useRouter();
 
-  const fetchIntegrantes = async () => {
+  const fetchIntegrantes = useCallback(async () => {
     setIsLoading(true);
     try {
       const data = await apiClient.getIntegrantes({
@@ -33,11 +34,11 @@ export default function IntegrantesAdminPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [search, currentPage]);
 
   useEffect(() => {
     fetchIntegrantes();
-  }, [search, currentPage]);
+  }, [fetchIntegrantes]);
 
   const handleDelete = async (id: number) => {
     if (confirm('¿Estás seguro de que quieres eliminar este integrante?')) {
@@ -67,15 +68,14 @@ export default function IntegrantesAdminPage() {
     {
       key: 'imagen',
       title: 'Foto',
-      render: (value: string, item: Integrante) => (
+      render: (row: Integrante) => (
         <div className="flex items-center">
-          <img
-            src={value || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'}
-            alt={item.nombre_integrante}
+          <Image
+            src={row.imagen || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face'}
+            alt={row.nombre_integrante}
+            width={40}
+            height={40}
             className="h-10 w-10 rounded-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face';
-            }}
           />
         </div>
       ),
@@ -83,13 +83,13 @@ export default function IntegrantesAdminPage() {
     {
       key: 'nombre_integrante',
       title: 'Integrante',
-      render: (value: string, item: Integrante) => (
+      render: (row: Integrante) => (
         <div>
           <div className="font-medium text-gray-900">
-            {value}
+            {row.nombre_integrante}
           </div>
           <div className="text-sm text-gray-500">
-            {item.correo}
+            {row.correo}
           </div>
         </div>
       ),
@@ -97,18 +97,18 @@ export default function IntegrantesAdminPage() {
     {
       key: 'semestre',
       title: 'Semestre',
-      render: (value: string) => (
+      render: (row: Integrante) => (
         <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-          {value}
+          {row.semestre}
         </span>
       ),
     },
     {
       key: 'link_git',
       title: 'GitHub',
-      render: (value: string) => (
+      render: (row: Integrante) => (
         <a
-          href={value}
+          href={row.link_git}
           target="_blank"
           rel="noopener noreferrer"
           className="text-green-600 hover:text-green-700 flex items-center gap-1"
@@ -121,41 +121,41 @@ export default function IntegrantesAdminPage() {
     {
       key: 'estado',
       title: 'Estado',
-      render: (value: boolean) => (
+      render: (row: Integrante) => (
         <span
           className={`px-2 py-1 text-xs font-medium rounded-full ${
-            value
+            row.estado
               ? 'bg-green-100 text-green-800'
               : 'bg-red-100 text-red-800'
           }`}
         >
-          {value ? 'Activo' : 'Inactivo'}
+          {row.estado ? 'Activo' : 'Inactivo'}
         </span>
       ),
     },
     {
       key: 'actions',
       title: 'Acciones',
-      render: (_: unknown, item: Integrante) => (
+      render: (row: Integrante) => (
         <div className="flex space-x-2">
           <button
-            onClick={() => toggleEstado(item)}
-            className={item.estado 
+            onClick={() => toggleEstado(row)}
+            className={row.estado 
               ? 'text-orange-600 hover:text-orange-700' 
               : 'text-green-600 hover:text-green-700'}
-            title={item.estado ? 'Desactivar' : 'Activar'}
+            title={row.estado ? 'Desactivar' : 'Activar'}
           >
-            {item.estado ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
+            {row.estado ? <UserX className="h-4 w-4" /> : <UserCheck className="h-4 w-4" />}
           </button>
           <button
-            onClick={() => router.push(`/admin/integrantes/${item.idintegrantes}/edit`)}
+            onClick={() => router.push(`/admin/integrantes/${row.idintegrantes}/edit`)}
             className="text-blue-600 hover:text-blue-700"
             title="Editar integrante"
           >
             <Edit className="h-4 w-4" />
           </button>
           <button
-            onClick={() => handleDelete(item.idintegrantes)}
+            onClick={() => handleDelete(row.idintegrantes)}
             className="text-red-600 hover:text-red-700"
             title="Eliminar integrante"
           >
@@ -204,8 +204,8 @@ export default function IntegrantesAdminPage() {
         columns={columns}
         isLoading={isLoading}
         pagination={{
-          current: currentPage,
-          total: Math.ceil(integrantes.count / 20),
+          currentPage,
+          totalPages: Math.ceil(integrantes.count / 10),
           onPageChange: setCurrentPage,
         }}
       />
