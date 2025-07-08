@@ -93,7 +93,6 @@ export default function CursosPage() {
       columns={columns}
       createPath="/admin/cursos/nuevo"
       searchPlaceholder="Buscar cursos..."
-      onDelete={handleDelete}
       modelName="cursos"
     />
   );

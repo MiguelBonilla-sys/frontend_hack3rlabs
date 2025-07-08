@@ -101,7 +101,6 @@ export default function ConferenciasPage() {
       columns={columns}
       createPath="/admin/conferencias/nuevo"
       searchPlaceholder="Buscar conferencias..."
-      onDelete={handleDelete}
       modelName="conferencias"
     />
   );
