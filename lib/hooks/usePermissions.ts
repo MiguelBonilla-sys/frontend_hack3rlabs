@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuth } from './useAuth';
+import { useAuth } from '@/lib/auth';
 import { apiClient } from '@/lib/api';
 
 export interface UserPermissions {
@@ -43,6 +43,9 @@ export function usePermissions() {
   }, [user]);
 
   const can = (action: 'create' | 'read' | 'update' | 'delete', model: string) => {
+    // Superusers have all permissions
+    if (user?.is_superuser) return true;
+    
     if (!permissions || !permissions[model]) return false;
     return permissions[model][`can_${action}`];
   };

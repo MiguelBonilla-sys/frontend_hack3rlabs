@@ -34,7 +34,9 @@ export const useAuth = create<AuthState>()(
       isAuthenticated: false,
       isLoading: false,
       error: null,
-      isDevelopmentMode: process.env.NEXT_PUBLIC_DEV_MODE === 'true',      login: async (username: string, password: string) => {
+      isDevelopmentMode: process.env.NEXT_PUBLIC_DEV_MODE === 'true',
+
+      login: async (username: string, password: string) => {
         set({ isLoading: true, error: null });
         console.log('🔐 Iniciando login para:', username);
 
@@ -93,7 +95,7 @@ export const useAuth = create<AuthState>()(
                                  errorMessage.includes('503') || 
                                  errorMessage.includes('ECONNREFUSED');
 
-          if (isNetworkError && get().isDevelopmentMode) {
+          if (isNetworkError && process.env.NEXT_PUBLIC_DEV_MODE === 'true') {
             // Modo fallback para desarrollo
             const isValidDevCredentials = DEV_CREDENTIALS.some(
               cred => cred.username === username && cred.password === password
@@ -176,7 +178,7 @@ export const useAuth = create<AuthState>()(
           set({ isAuthenticated: false, error: null });
           return;
         }        // Si es un token de desarrollo, validar directamente
-        if (token.startsWith('dev-token-') && get().isDevelopmentMode) {
+        if (token.startsWith('dev-token-') && process.env.NEXT_PUBLIC_DEV_MODE === 'true') {
           const mockUser: User = {
             id: 1,
             username: 'dev-user',
@@ -232,7 +234,6 @@ export const useAuth = create<AuthState>()(
         user: state.user,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
-        isDevelopmentMode: state.isDevelopmentMode,
       }),
     }
   )
