@@ -17,7 +17,6 @@ interface AdminPageProps<T> {
   columns: Column<T>[];
   createPath: string;
   searchPlaceholder?: string;
-  onDelete?: (id: number) => Promise<void>;
   modelName: string;
 }
 
@@ -27,7 +26,6 @@ export default function AdminPage<T>({
   columns,
   createPath,
   searchPlaceholder = 'Buscar...',
-  onDelete,
   modelName,
 }: AdminPageProps<T>) {
   const router = useRouter();
